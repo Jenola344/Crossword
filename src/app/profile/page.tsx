@@ -13,6 +13,8 @@ import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { LeaderboardTab } from '@/components/leaderboard-tab';
 import { DailyTasksTab } from '@/components/daily-tasks-tab';
+import { ReferralTab } from '@/components/referral-tab';
+import Link from 'next/link';
 
 const getFriendAvatar = (avatarId: string) => PlaceHolderImages.find(p => p.id === avatarId);
 
@@ -84,11 +86,12 @@ export default function ProfilePage() {
         </Card>
 
         <Tabs defaultValue="nfts" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="nfts">NFTs</TabsTrigger>
             <TabsTrigger value="friends">Friends</TabsTrigger>
             <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
             <TabsTrigger value="tasks">Tasks</TabsTrigger>
+            <TabsTrigger value="referrals">Referrals</TabsTrigger>
           </TabsList>
           
           <TabsContent value="nfts" className="mt-6">
@@ -145,6 +148,10 @@ export default function ProfilePage() {
 
           <TabsContent value="tasks" className="mt-6">
             <DailyTasksTab />
+          </TabsContent>
+
+          <TabsContent value="referrals" className="mt-6">
+            <ReferralTab />
           </TabsContent>
 
         </Tabs>
