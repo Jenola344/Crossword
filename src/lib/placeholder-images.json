@@ -1,3 +1,46 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "nft-common",
+      "description": "A common NFT",
+      "imageUrl": "https://images.unsplash.com/photo-1595411425732-e69c1abe2763?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMHBhdHRlcm58ZW58MHx8fHwxNzYwNzMxNTIzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract pattern"
+    },
+    {
+      "id": "nft-rare",
+      "description": "A rare NFT",
+      "imageUrl": "https://images.unsplash.com/photo-1679669693237-8f8961d56da7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxnZW9tZXRyaWMlMjBjcnlzdGFsfGVufDB8fHx8MTc2MDc1NTU0MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "geometric crystal"
+    },
+    {
+      "id": "nft-epic",
+      "description": "An epic NFT",
+      "imageUrl": "https://images.unsplash.com/photo-1760127831105-626ce014331c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxnbG93aW5nJTIwb3JifGVufDB8fHx8MTc2MDczMTY0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "glowing orb"
+    },
+    {
+      "id": "nft-legendary",
+      "description": "A legendary NFT",
+      "imageUrl": "https://images.unsplash.com/photo-1711560708511-36b48acad6bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb3NtaWMlMjBnYWxheHl8ZW58MHx8fHwxNzYwNzU1NTQyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cosmic galaxy"
+    },
+    {
+      "id": "profile-avatar-1",
+      "description": "Profile avatar 1",
+      "imageUrl": "https://images.unsplash.com/photo-1733004441403-ac0d733b9d5b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhYnN0cmFjdCUyMHBlcnNvbnxlbnwwfHx8fDE3NjA3MzUzODd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract person"
+    },
+    {
+      "id": "profile-avatar-2",
+      "description": "Profile avatar 2",
+      "imageUrl": "https://images.unsplash.com/photo-1750096319146-6310519b5af2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cm9ib3QlMjBmYWNlfGVufDB8fHx8MTc2MDczNDE0Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "robot face"
+    },
+    {
+      "id": "profile-avatar-3",
+      "description": "Profile avatar 3",
+      "imageUrl": "https://images.unsplash.com/photo-1622278801521-4f8efba351cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjb2xvcmZ1bCUyMHNwbGFzaHxlbnwwfHx8fDE3NjA3NTU1NDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "colorful splash"
+    }
+  ]
 }
