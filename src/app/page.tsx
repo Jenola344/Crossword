@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator';
 export default function HomePage() {
   return (
     <MainLayout>
-      <div className="container mx-auto flex flex-col items-center justify-center min-h-[calc(100vh-80px)] px-4 pt-16 text-center">
+      <div className="container mx-auto flex flex-col items-center justify-center min-h-[calc(100vh-128px)] px-4 text-center">
         <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
           Crossword Crusade
         </h1>
