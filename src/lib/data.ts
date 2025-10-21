@@ -24,6 +24,54 @@ export const dailyPuzzleData = {
   ]
 };
 
+export const generatedPuzzles = [
+  {
+    id: 'puzzle-web-dev',
+    name: 'Web Weaving',
+    reward: { tokens: 50, hint: 0 },
+    size: 8,
+    words: [
+      { word: 'REACT', clue: 'A popular UI library', start: [0, 1], direction: 'across' },
+      { word: 'GRID', clue: 'CSS layout system', start: [2, 0], direction: 'across' },
+      { word: 'FETCH', clue: 'API to request resources', start: [4, 2], direction: 'across' },
+      { word: 'STATE', clue: 'Manages component data', start: [6, 4], direction: 'across' },
+      { word: 'ARROW', clue: 'A concise function type', start: [0, 3], direction: 'down' },
+      { word: 'CHILD', clue: 'A nested component', start: [2, 2], direction: 'down' },
+      { word: 'HTML', clue: 'Markup for web pages', start: [4, 3], direction: 'down' },
+    ]
+  },
+  {
+    id: 'puzzle-python',
+    name: 'Pythonic Paths',
+    reward: { tokens: 50, hint: 0 },
+    size: 8,
+    words: [
+      { word: 'TUPLE', clue: 'Immutable sequence', start: [1, 1], direction: 'across' },
+      { word: 'FLASK', clue: 'A web micro-framework', start: [3, 0], direction: 'across' },
+      { word: 'AWAIT', clue: 'Used in async functions', start: [5, 3], direction: 'across' },
+      { word: 'PRINT', clue: 'Displays output to console', start: [7, 0], direction: 'across' },
+      { word: 'LIST', clue: 'Mutable sequence type', start: [1, 3], direction: 'down' },
+      { word: 'CLASS', clue: 'Blueprint for objects', start: [3, 3], direction: 'down' },
+      { word: 'PYPI', clue: 'Python Package Index', start: [5, 5], direction: 'down' },
+    ]
+  },
+  {
+    id: 'puzzle-cloud',
+    name: 'Cloud Canvas',
+    reward: { tokens: 50, hint: 0 },
+    size: 8,
+    words: [
+      { word: 'DOCKER', clue: 'Containerization platform', start: [0, 1], direction: 'across' },
+      { word: 'AZURE', clue: 'Microsoft\'s cloud', start: [2, 0], direction: 'across' },
+      { word: 'NODE', clue: 'Server-side JS runtime', start: [4, 4], direction: 'across' },
+      { word: 'LAMBDA', clue: 'AWS serverless functions', start: [6, 0], direction: 'across' },
+      { word: 'KEY', clue: 'Used for SSH access', start: [0, 5], direction: 'down' },
+      { word: 'REGION', clue: 'A geographic cloud area', start: [2, 2], direction: 'down' },
+      { word: 'YAML', clue: 'Config file language', start: [4, 4], direction: 'down' },
+    ]
+  }
+];
+
 export const competitions = [
   {
     id: 1,
