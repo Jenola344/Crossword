@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useWeb3 } from '@/lib/web3-context';
 import { storeData } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
-import { Star, Bitcoin, Sun, TrendingUp, TrendingDown, Zap, Pen, ShoppingCart } from 'lucide-react';
+import { Star, Bitcoin, Sun, TrendingUp, TrendingDown, Zap, Pen } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 const icons: { [key: string]: LucideIcon } = {
@@ -127,7 +127,7 @@ export default function StorePage() {
                       <div className="font-bold text-lg flex items-center gap-1 justify-center my-4">{item.price} <Star className="w-4 h-4 text-yellow-400" /></div>
                       <Button className="w-full" onClick={() => handlePurchase(item.id, item.price, item.name)} disabled={isOwned(item.id)}>
                         {isOwned(item.id) ? 'Owned' : 'Buy'}
-                      </a:Button>
+                      </Button>
                     </CardContent>
                   </Card>
                 );
