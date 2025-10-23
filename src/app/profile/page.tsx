@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import MainLayout from '@/components/layout/main-layout';
 import { useWeb3, type Nft } from '@/lib/web3-context';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { userProfile } from '@/lib/data';
 import Image from 'next/image';
-import { LogOut, MessageSquare, Edit } from 'lucide-react';
+import { LogOut, MessageSquare, Edit, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { LeaderboardTab } from '@/components/leaderboard-tab';
@@ -47,6 +47,7 @@ export default function ProfilePage() {
   const [selectedAvatar, setSelectedAvatar] = useState(profileAvatars[0]);
   const [tempName, setTempName] = useState(userName);
   const [tempAvatar, setTempAvatar] = useState(selectedAvatar);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
 
   if (!address) {
@@ -65,6 +66,17 @@ export default function ProfilePage() {
     setSelectedAvatar(tempAvatar);
     setIsEditing(false);
   }
+
+  const handleAvatarUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setTempAvatar({ id: 'custom', imageUrl: reader.result as string, description: 'custom avatar', imageHint: 'custom' });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <MainLayout>
@@ -107,6 +119,23 @@ export default function ProfilePage() {
                                         </Avatar>
                                     </button>
                                 ))}
+                                <button onClick={() => fileInputRef.current?.click()} className={cn("rounded-full border-4 bg-secondary flex items-center justify-center", tempAvatar.id === 'custom' ? "border-primary" : "border-transparent")}>
+                                  {tempAvatar.id === 'custom' ? (
+                                    <Avatar className="w-full h-auto">
+                                      <AvatarImage src={tempAvatar.imageUrl} />
+                                      <AvatarFallback>UP</AvatarFallback>
+                                    </Avatar>
+                                  ) : (
+                                    <Upload className="w-1/2 h-1/2 text-muted-foreground" />
+                                  )}
+                                </button>
+                                <Input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={handleAvatarUpload}
+                                />
                             </div>
                         </div>
                     </div>
