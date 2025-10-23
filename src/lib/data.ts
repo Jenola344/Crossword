@@ -5,7 +5,19 @@ export type PuzzleWord = {
   direction: 'across' | 'down';
 };
 
-export const dailyPuzzleData = {
+export type DailyPuzzle = {
+  id: string;
+  name: string;
+  reward: {
+    tokens: number;
+    hint: number;
+  };
+  size: 10 | 8;
+  words: PuzzleWord[];
+};
+
+
+export const dailyPuzzleData: DailyPuzzle = {
   id: 'daily-2024-07-29',
   name: 'CRUESSION',
   reward: {
@@ -24,7 +36,50 @@ export const dailyPuzzleData = {
   ]
 };
 
-export const generatedPuzzles = [];
+export const generatedPuzzles = [
+  {
+    id: "puzzle-1",
+    name: "JS Jive",
+    size: 8,
+    words: [
+      { word: "PROMISE", clue: "A placeholder for a future value", start: [0, 0], direction: "across" },
+      { word: "REACT", clue: "A popular UI library", start: [0, 2], direction: "down" },
+      { word: "NODE", clue: "A JavaScript runtime", start: [2, 4], direction: "across" },
+      { word: "JSON", clue: "A lightweight data-interchange format", start: [4, 1], direction: "down" },
+      { word: "ARRAY", clue: "A list-like object", start: [4, 1], direction: "across" },
+      { word: "CLASS", clue: "A blueprint for creating objects", start: [6, 0], direction: "across" },
+      { word: "ASYNC", clue: "A keyword for asynchronous functions", start: [0, 6], direction: "down" }
+    ]
+  },
+  {
+    id: "puzzle-2",
+    name: "Python Puzzler",
+    size: 8,
+    words: [
+      { word: "DJANGO", clue: "A high-level web framework", start: [0, 1], direction: "across" },
+      { word: "LIST", clue: "A mutable ordered sequence", start: [0, 3], direction: "down" },
+      { word: "TUPLE", clue: "An immutable ordered sequence", start: [2, 0], direction: "across" },
+      { word: "PANDAS", clue: "A data analysis library", start: [2, 2], direction: "down" },
+      { word: "FLASK", clue: "A micro web framework", start: [4, 0], direction: "across" },
+      { word: "NUMPY", clue: "A library for numerical computing", start: [4, 3], direction: "down" },
+      { word: "AWAIT", clue: "Pause execution until a coroutine completes", start: [6, 3], direction: "across" }
+    ]
+  },
+  {
+    id: "puzzle-3",
+    name: "Web Weaver",
+    size: 8,
+    words: [
+      { word: "HTML", clue: "Markup language for web pages", start: [0, 2], direction: "across" },
+      { word: "CSS", clue: "Stylesheet language", start: [0, 4], direction: "down" },
+      { word: "GRID", clue: "A layout model in CSS", start: [2, 1], direction: "across" },
+      { word: "FETCH", clue: "API for network requests", start: [2, 3], direction: "down" },
+      { word: "DOCKER", clue: "A platform for developing, shipping, and running applications in containers", start: [4, 0], direction: "across" },
+      { word: "CLOUD", clue: "On-demand computing services over the internet", start: [4, 5], direction: "down" },
+      { word: "API", clue: "A set of rules for building software", start: [6, 2], direction: "across" }
+    ]
+  }
+];
 
 export const competitions = [
   {

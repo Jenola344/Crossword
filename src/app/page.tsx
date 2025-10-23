@@ -2,6 +2,7 @@ import MainLayout from '@/components/layout/main-layout';
 import { Button } from '@/components/ui/button';
 import { WalletConnect } from '@/components/wallet-connect';
 import { Separator } from '@/components/ui/separator';
+import Link from 'next/link';
 
 export default function HomePage() {
   return (
@@ -21,9 +22,11 @@ export default function HomePage() {
             <span className="px-4 text-sm text-muted-foreground">OR</span>
             <Separator className="flex-1" />
           </div>
-          <Button variant="secondary" className="w-full">
-            Play as Guest
-          </Button>
+          <Link href="/daily" className="w-full">
+            <Button variant="secondary" className="w-full">
+              Play as Guest
+            </Button>
+          </Link>
           <Button variant="link" className="text-accent">
             Watch Tutorial
           </Button>

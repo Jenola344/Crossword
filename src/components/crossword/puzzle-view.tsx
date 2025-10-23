@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from 'react';
-import { dailyPuzzleData } from '@/lib/data';
+import { useState, useMemo, useEffect } from 'react';
+import type { DailyPuzzle } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
@@ -10,13 +10,19 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 
 interface PuzzleViewProps {
+  puzzleData: DailyPuzzle;
   onPuzzleComplete: () => void;
 }
 
-export default function PuzzleView({ onPuzzleComplete }: PuzzleViewProps) {
+export default function PuzzleView({ puzzleData, onPuzzleComplete }: PuzzleViewProps) {
   const { toast } = useToast();
   const [answers, setAnswers] = useState<{[key: string]: string}>({});
   const [completedWords, setCompletedWords] = useState<string[]>([]);
+  
+  useEffect(() => {
+    setAnswers({});
+    setCompletedWords([]);
+  }, [puzzleData]);
 
   const handleInputChange = (word: string, value: string) => {
     setAnswers(prev => ({...prev, [word]: value.toUpperCase()}));
@@ -25,23 +31,26 @@ export default function PuzzleView({ onPuzzleComplete }: PuzzleViewProps) {
   const checkAnswer = (word: string) => {
     if (answers[word] === word) {
       if (!completedWords.includes(word)) {
-        setCompletedWords(prev => [...prev, word]);
+        setCompletedWords(prev => {
+            const newCompletedWords = [...prev, word];
+            if (newCompletedWords.length === puzzleData.words.length) {
+              onPuzzleComplete();
+            }
+            return newCompletedWords;
+        });
         toast({ title: "Word Correct!", description: `You found "${word}"!` });
-        if (completedWords.length + 1 === dailyPuzzleData.words.length) {
-          onPuzzleComplete();
-        }
       }
     } else if (answers[word] && answers[word].length === word.length) {
       toast({ variant: 'destructive', title: "Not quite!", description: `"${answers[word]}" is not the correct word.` });
     }
   };
 
-  const progress = (completedWords.length / dailyPuzzleData.words.length) * 100;
+  const progress = (completedWords.length / puzzleData.words.length) * 100;
 
   const grid = useMemo(() => {
-    const gridSize = dailyPuzzleData.size;
+    const gridSize = puzzleData.size;
     const newGrid: (string | null)[][] = Array(gridSize).fill(null).map(() => Array(gridSize).fill(null));
-    dailyPuzzleData.words.forEach(wordInfo => {
+    puzzleData.words.forEach(wordInfo => {
       let [row, col] = wordInfo.start;
       for (let i = 0; i < wordInfo.word.length; i++) {
         if(row < gridSize && col < gridSize) {
@@ -52,12 +61,12 @@ export default function PuzzleView({ onPuzzleComplete }: PuzzleViewProps) {
       }
     });
     return newGrid;
-  }, []);
+  }, [puzzleData]);
 
   return (
     <div className="space-y-6">
-      <div className="aspect-square bg-card p-2 rounded-xl shadow-lg border border-primary/20">
-        <div className={`grid grid-cols-10 gap-1`}>
+      <div className={`aspect-square bg-card p-2 rounded-xl shadow-lg border border-primary/20`}>
+        <div className={`grid grid-cols-${puzzleData.size} gap-1`}>
           {grid.map((row, rowIndex) => (
             row.map((cell, colIndex) => (
               <div
@@ -66,7 +75,7 @@ export default function PuzzleView({ onPuzzleComplete }: PuzzleViewProps) {
                   "aspect-square w-full rounded-sm flex items-center justify-center font-headline text-lg uppercase select-none transition-colors",
                   cell ? "bg-background" : "bg-card",
                   completedWords.some(w => {
-                    const wordInfo = dailyPuzzleData.words.find(wi => wi.word === w);
+                    const wordInfo = puzzleData.words.find(wi => wi.word === w);
                     if (!wordInfo) return false;
                     let [startRow, startCol] = wordInfo.start;
                     if (wordInfo.direction === 'across') {
@@ -87,14 +96,14 @@ export default function PuzzleView({ onPuzzleComplete }: PuzzleViewProps) {
       <div>
         <div className="flex justify-between items-center mb-2">
             <p className="text-sm text-muted-foreground">Progress</p>
-            <p className="text-sm font-bold">{completedWords.length} / {dailyPuzzleData.words.length}</p>
+            <p className="text-sm font-bold">{completedWords.length} / {puzzleData.words.length}</p>
         </div>
         <Progress value={progress} className="h-2 [&>div]:bg-gradient-to-r [&>div]:from-primary [&>div]:to-accent" />
       </div>
 
       <div className="space-y-4">
         <h3 className="font-headline text-xl">Clues</h3>
-        {dailyPuzzleData.words.map(wordInfo => (
+        {puzzleData.words.map(wordInfo => (
           <div key={wordInfo.word} className="flex items-center gap-3 p-2 rounded-md hover:bg-secondary/50">
             <p className="flex-1 text-sm">{wordInfo.clue}</p>
             {completedWords.includes(wordInfo.word) ? (
@@ -113,7 +122,7 @@ export default function PuzzleView({ onPuzzleComplete }: PuzzleViewProps) {
       </div>
       <div className="flex justify-between items-center pt-4">
         <Button variant="outline"><HelpCircle className="w-4 h-4 mr-2" />Get a Hint</Button>
-        <Button onClick={onPuzzleComplete} disabled={completedWords.length !== dailyPuzzleData.words.length}>Complete Puzzle</Button>
+        <Button onClick={onPuzzleComplete} disabled={completedWords.length !== puzzleData.words.length}>Complete Puzzle</Button>
       </div>
     </div>
   );
