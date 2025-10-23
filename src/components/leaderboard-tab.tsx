@@ -1,10 +1,12 @@
 "use client";
 
+import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { leaderboardData } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useWeb3 } from '@/lib/web3-context';
 import { Crown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -17,11 +19,27 @@ type LeaderboardEntry = {
 
 const getAvatar = (avatarId: string) => PlaceHolderImages.find(p => p.id === avatarId);
 
-function LeaderboardList({ data }: {data: LeaderboardEntry[]}) {
+function LeaderboardList({ data, userScore }: {data: Omit<LeaderboardEntry, 'rank'>[], userScore: number}) {
+    
+    const processedData = useMemo(() => {
+        const userEntry = data.find(p => p.name === 'You');
+        if (userEntry) {
+            userEntry.score = userScore;
+        }
+
+        const sortedData = [...data].sort((a, b) => b.score - a.score);
+
+        return sortedData.map((player, index) => ({
+            ...player,
+            rank: index + 1,
+        }));
+
+    }, [data, userScore]);
+
     return (
         <div className="space-y-2">
-            {data.map((player, index) => (
-                <div key={player.rank} className={cn(
+            {processedData.map((player, index) => (
+                <div key={player.name + player.rank} className={cn(
                     "flex items-center gap-4 p-2 rounded-lg", 
                     player.name === 'You' ? 'bg-primary/20 border border-primary/30' : 'bg-secondary/50'
                 )}>
@@ -42,6 +60,8 @@ function LeaderboardList({ data }: {data: LeaderboardEntry[]}) {
 }
 
 export function LeaderboardTab() {
+    const { balance } = useWeb3();
+
     return (
         <Card>
             <CardHeader>
@@ -54,9 +74,9 @@ export function LeaderboardTab() {
                         <TabsTrigger value="weekly">Weekly</TabsTrigger>
                         <TabsTrigger value="all-time">All-Time</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="daily" className="mt-4"><LeaderboardList data={leaderboardData.daily} /></TabsContent>
-                    <TabsContent value="weekly" className="mt-4"><LeaderboardList data={leaderboardData.weekly} /></TabsContent>
-                    <TabsContent value="all-time" className="mt-4"><LeaderboardList data={leaderboardData.allTime} /></TabsContent>
+                    <TabsContent value="daily" className="mt-4"><LeaderboardList data={leaderboardData.daily} userScore={balance} /></TabsContent>
+                    <TabsContent value="weekly" className="mt-4"><LeaderboardList data={leaderboardData.weekly} userScore={balance} /></TabsContent>
+                    <TabsContent value="all-time" className="mt-4"><LeaderboardList data={leaderboardData.allTime} userScore={balance} /></TabsContent>
                 </Tabs>
             </CardContent>
         </Card>
