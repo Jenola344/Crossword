@@ -41,19 +41,20 @@ const prompt = ai.definePrompt({
     name: 'puzzleGeneratorPrompt',
     input: { schema: PuzzleGeneratorInputSchema },
     output: { schema: PuzzleSchema },
-    prompt: `You are a master crossword puzzle creator. Your task is to generate a complete, valid, and fully intersecting crossword puzzle based on a given theme.
+    prompt: `You are a master crossword puzzle creator. Your task is to generate a complete, valid, and highly interconnected crossword puzzle based on a given theme.
 
     **Instructions:**
-    1.  **Theme:** The puzzle must be based on the theme: {{{theme}}}.
+    1.  **Thematic Consistency:** All words and clues must be strictly related to the theme: {{{theme}}}.
     2.  **Word Count:** Generate exactly {{{wordCount}}} words.
     3.  **Grid Size:** The puzzle must fit within a {{{size}}}x{{{size}}} grid. The top-left corner is [0, 0].
-    4.  **High Intersection:** Words must be tightly interconnected. Every word must intersect with at least one other word, and ideally more. Avoid isolated words or small, disconnected clusters.
-    5.  **Valid Placement:**
-        - Words cannot overlap incorrectly. If two words cross, they must share the same letter at the intersection point.
-        - Words must stay within the grid boundaries.
-    6.  **Output Format:** Provide the output as a valid JSON object matching the output schema. Ensure all fields, including \`id\`, \`name\`, \`size\`, and the full \`words\` array with \`word\`, \`clue\`, \`start\` coordinates, and \`direction\`, are populated correctly. The puzzle name should be a creative title based on the theme. The puzzle ID should be a URL-safe slug based on the name.
+    4.  **High Intersection Density:** This is critical. Every single word in the puzzle must intersect with **at least two** other words. Do not generate puzzles with words that only intersect once. The goal is a dense, web-like structure.
+    5.  **Word Length Balance:** Create a good mix of word lengths. Include short (3-4 letters), medium (5-7 letters), and long (8+ letters) words where possible for the given theme and word count.
+    6.  **Valid Placement & Letter Matching:**
+        - Words cannot overlap incorrectly. If two words cross, they must share the exact same letter at the intersection point.
+        - Words must stay entirely within the grid boundaries.
+    7.  **Output Format:** Provide the output as a single, valid JSON object that strictly matches the output schema. All fields must be populated correctly, including \`id\`, \`name\`, \`size\`, and the full \`words\` array with \`word\`, \`clue\`, \`start\` coordinates, and \`direction\`. The puzzle name should be a creative title based on the theme. The puzzle ID should be a URL-safe slug based on the name.
 
-    Generate the puzzle now.`,
+    Generate the puzzle now, paying close attention to the high intersection requirement.`,
 });
 
 const puzzleGeneratorFlow = ai.defineFlow(
