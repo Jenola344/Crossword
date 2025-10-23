@@ -8,7 +8,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit/zod';
+import {z} from 'zod';
 
 export const PuzzleWordSchema = z.object({
   word: z.string().describe('The word to be placed in the grid.'),
