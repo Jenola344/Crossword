@@ -1,6 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
+import { ethers } from 'ethers';
 import { useToast } from '@/hooks/use-toast';
 import { PlaceHolderImages, type ImagePlaceholder } from '@/lib/placeholder-images';
 
@@ -45,15 +46,46 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
   const [nfts, setNfts] = useState<Nft[]>([]);
   const { toast } = useToast();
 
-  const connectWallet = () => {
-    const mockAddress = "0x1234AbCd...EfGh5678";
-    setAddress(mockAddress);
-    setBalance(1000);
-    setNfts(MOCK_NFTS);
-    toast({
-      title: 'Wallet Connected',
-      description: `Connected with address: ${mockAddress.slice(0, 10)}...${mockAddress.slice(-4)}`,
-    });
+  const getProvider = () => {
+    if (typeof window !== 'undefined' && window.ethereum) {
+      return new ethers.BrowserProvider(window.ethereum);
+    }
+    return null;
+  };
+
+  const connectWallet = async () => {
+    const provider = getProvider();
+    if (provider) {
+      try {
+        const accounts = await provider.send("eth_requestAccounts", []);
+        if (accounts.length > 0) {
+          const signer = await provider.getSigner();
+          const signerAddress = await signer.getAddress();
+          setAddress(signerAddress);
+          // For now, we'll keep the mock balance and NFTs.
+          // We can replace this with real contract calls later.
+          setBalance(1000); 
+          setNfts(MOCK_NFTS);
+          toast({
+            title: 'Wallet Connected',
+            description: `Connected with address: ${signerAddress.slice(0, 10)}...${signerAddress.slice(-4)}`,
+          });
+        }
+      } catch (error) {
+        console.error("Error connecting to wallet:", error);
+        toast({
+          variant: "destructive",
+          title: 'Connection Failed',
+          description: 'Could not connect to the wallet.',
+        });
+      }
+    } else {
+      toast({
+        variant: "destructive",
+        title: 'MetaMask Not Found',
+        description: 'Please install a Web3 wallet like MetaMask.',
+      });
+    }
   };
 
   const disconnectWallet = () => {
@@ -66,6 +98,7 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
   };
   
   const claimTokens = (amount: number) => {
+    // This will be replaced with a real contract call.
     setBalance(prev => prev + amount);
     toast({
       title: "Tokens Claimed!",
@@ -74,6 +107,7 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
   };
 
   const revealNft = () => {
+    // This will be replaced with a real contract call.
     const rarities: Nft['rarity'][] = ['Common', 'Rare', 'Epic', 'Legendary'];
     const rarity = rarities[Math.floor(Math.random() * rarities.length)];
     const newNft: Nft = {
@@ -91,6 +125,7 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
   };
   
   const spendTokens = (amount: number, itemName: string) => {
+    // This will be replaced with a real contract call.
     if (balance >= amount) {
       setBalance(prev => prev - amount);
       toast({
@@ -107,6 +142,28 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
       return false;
     }
   }
+
+  const handleAccountsChanged = useCallback((accounts: string[]) => {
+    if (accounts.length === 0) {
+      disconnectWallet();
+    } else {
+      setAddress(accounts[0]);
+    }
+  }, []);
+
+  useEffect(() => {
+    const ethereum = window.ethereum;
+    if (ethereum) {
+        // @ts-ignore
+        ethereum.on('accountsChanged', handleAccountsChanged);
+
+        return () => {
+            // @ts-ignore
+            ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        };
+    }
+  }, [handleAccountsChanged]);
+
 
   return (
     <Web3Context.Provider value={{ address, connectWallet, disconnectWallet, balance, nfts, claimTokens, revealNft, spendTokens }}>
