@@ -41,7 +41,7 @@ const getRarityTextClass = (rarity: Nft['rarity']) => {
 const profileAvatars = PlaceHolderImages.filter(p => p.id.startsWith('profile-avatar-'));
 
 export default function ProfilePage() {
-  const { address, balance, nfts, disconnectWallet } = useWeb3();
+  const { address, balance, nfts, disconnectWallet, puzzlesSolved, longestStreak } = useWeb3();
   const [isEditing, setIsEditing] = useState(false);
   const [userName, setUserName] = useState("Your Profile");
   const [selectedAvatar, setSelectedAvatar] = useState(profileAvatars[0]);
@@ -154,11 +154,11 @@ export default function ProfilePage() {
         <Card className="mb-8">
             <CardContent className="p-4 grid grid-cols-3 divide-x divide-border">
                 <div className="text-center px-2">
-                    <p className="text-2xl font-bold font-headline">{userProfile.stats.puzzlesSolved}</p>
+                    <p className="text-2xl font-bold font-headline">{puzzlesSolved}</p>
                     <p className="text-xs text-muted-foreground">Puzzles Solved</p>
                 </div>
                 <div className="text-center px-2">
-                    <p className="text-2xl font-bold font-headline">{userProfile.stats.longestStreak}</p>
+                    <p className="text-2xl font-bold font-headline">{longestStreak}</p>
                     <p className="text-xs text-muted-foreground">Longest Streak</p>
                 </div>
                 <div className="text-center px-2">

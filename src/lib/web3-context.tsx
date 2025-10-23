@@ -21,6 +21,8 @@ interface Web3ContextType {
   claimTokens: (amount: number) => void;
   revealNft: () => Nft;
   spendTokens: (amount: number, itemName: string) => boolean;
+  puzzlesSolved: number;
+  longestStreak: number;
 }
 
 const Web3Context = createContext<Web3ContextType | undefined>(undefined);
@@ -44,6 +46,8 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
   const [address, setAddress] = useState<string | null>(null);
   const [balance, setBalance] = useState(0);
   const [nfts, setNfts] = useState<Nft[]>([]);
+  const [puzzlesSolved, setPuzzlesSolved] = useState(0);
+  const [longestStreak, setLongestStreak] = useState(0);
   const { toast } = useToast();
 
   const getProvider = () => {
@@ -66,6 +70,8 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
           // We can replace this with real contract calls later.
           setBalance(1000); 
           setNfts(MOCK_NFTS);
+          setPuzzlesSolved(42);
+          setLongestStreak(12);
           toast({
             title: 'Wallet Connected',
             description: `Connected with address: ${signerAddress.slice(0, 10)}...${signerAddress.slice(-4)}`,
@@ -92,6 +98,8 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
     setAddress(null);
     setBalance(0);
     setNfts([]);
+    setPuzzlesSolved(0);
+    setLongestStreak(0);
     toast({
       title: 'Wallet Disconnected',
     });
@@ -166,7 +174,7 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
 
 
   return (
-    <Web3Context.Provider value={{ address, connectWallet, disconnectWallet, balance, nfts, claimTokens, revealNft, spendTokens }}>
+    <Web3Context.Provider value={{ address, connectWallet, disconnectWallet, balance, nfts, claimTokens, revealNft, spendTokens, puzzlesSolved, longestStreak }}>
       {children}
     </Web3Context.Provider>
   );
