@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, LayoutGrid, Trophy, User, Gift } from 'lucide-react';
+import { Home, LayoutGrid, Trophy, User, Gift, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/daily', label: 'Puzzles', icon: LayoutGrid },
+  { href: '/generate', label: 'Generate', icon: Sparkles },
   { href: '/compete', label: 'Compete', icon: Trophy },
   { href: '/profile', label: 'Profile', icon: User },
 ];
