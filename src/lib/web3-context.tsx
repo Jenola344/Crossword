@@ -19,7 +19,7 @@ interface Web3ContextType {
   nfts: Nft[];
   claimTokens: (amount: number) => void;
   revealNft: () => Nft;
-  payEntryFee: (amount: number) => boolean;
+  spendTokens: (amount: number, itemName: string) => boolean;
 }
 
 const Web3Context = createContext<Web3ContextType | undefined>(undefined);
@@ -90,26 +90,26 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
     return newNft;
   };
   
-  const payEntryFee = (amount: number) => {
+  const spendTokens = (amount: number, itemName: string) => {
     if (balance >= amount) {
       setBalance(prev => prev - amount);
       toast({
-        title: "Competition Joined!",
-        description: `Paid ${amount} $CROSS entry fee.`
+        title: "Purchase Successful!",
+        description: `You bought ${itemName} for ${amount} $CROSS.`
       })
       return true;
     } else {
       toast({
         variant: "destructive",
         title: "Insufficient Funds",
-        description: `You need ${amount} $CROSS to join.`
+        description: `You need ${amount} $CROSS to buy ${itemName}.`
       })
       return false;
     }
   }
 
   return (
-    <Web3Context.Provider value={{ address, connectWallet, disconnectWallet, balance, nfts, claimTokens, revealNft, payEntryFee }}>
+    <Web3Context.Provider value={{ address, connectWallet, disconnectWallet, balance, nfts, claimTokens, revealNft, spendTokens }}>
       {children}
     </Web3Context.Provider>
   );

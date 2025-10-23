@@ -9,10 +9,10 @@ import { Trophy, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function CompetePage() {
-  const { payEntryFee, address } = useWeb3();
+  const { spendTokens, address } = useWeb3();
   const { toast } = useToast();
 
-  const handleJoin = (fee: number) => {
+  const handleJoin = (fee: number, name: string) => {
     if (!address) {
         toast({
             variant: "destructive",
@@ -21,7 +21,7 @@ export default function CompetePage() {
         })
         return;
     }
-    payEntryFee(fee);
+    spendTokens(fee, name);
   }
 
   return (
@@ -57,7 +57,7 @@ export default function CompetePage() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button className="w-full" onClick={() => handleJoin(comp.entryFee)}>
+                <Button className="w-full" onClick={() => handleJoin(comp.entryFee, comp.name)}>
                   Join Now
                 </Button>
               </CardFooter>
