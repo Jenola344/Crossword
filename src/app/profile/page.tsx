@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from 'react';
 import MainLayout from '@/components/layout/main-layout';
 import { useWeb3, type Nft } from '@/lib/web3-context';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -8,13 +9,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { userProfile } from '@/lib/data';
 import Image from 'next/image';
-import { LogOut, MessageSquare } from 'lucide-react';
+import { LogOut, MessageSquare, Edit } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { LeaderboardTab } from '@/components/leaderboard-tab';
 import { DailyTasksTab } from '@/components/daily-tasks-tab';
 import { ReferralTab } from '@/components/referral-tab';
-import Link from 'next/link';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 const getFriendAvatar = (avatarId: string) => PlaceHolderImages.find(p => p.id === avatarId);
 
@@ -35,8 +38,16 @@ const getRarityTextClass = (rarity: Nft['rarity']) => {
     }
 }
 
+const profileAvatars = PlaceHolderImages.filter(p => p.id.startsWith('profile-avatar-'));
+
 export default function ProfilePage() {
   const { address, balance, nfts, disconnectWallet } = useWeb3();
+  const [isEditing, setIsEditing] = useState(false);
+  const [userName, setUserName] = useState("Your Profile");
+  const [selectedAvatar, setSelectedAvatar] = useState(profileAvatars[0]);
+  const [tempName, setTempName] = useState(userName);
+  const [tempAvatar, setTempAvatar] = useState(selectedAvatar);
+
 
   if (!address) {
     return (
@@ -49,23 +60,66 @@ export default function ProfilePage() {
     );
   }
 
+  const handleSaveProfile = () => {
+    setUserName(tempName);
+    setSelectedAvatar(tempAvatar);
+    setIsEditing(false);
+  }
+
   return (
     <MainLayout>
       <div className="container mx-auto px-4 pt-8 pb-12">
-        <header className="flex items-center justify-between mb-8">
+        <header className="flex items-start justify-between mb-8">
           <div className="flex items-center gap-4">
             <Avatar className="h-20 w-20 border-2 border-primary">
-              <AvatarImage src={getFriendAvatar('profile-avatar-1')?.imageUrl} alt="User Avatar" />
+              <AvatarImage src={selectedAvatar?.imageUrl} alt="User Avatar" />
               <AvatarFallback>YOU</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="font-headline text-3xl font-bold">Your Profile</h1>
+              <h1 className="font-headline text-3xl font-bold">{userName}</h1>
               <p className="font-mono text-sm text-muted-foreground truncate max-w-[200px] md:max-w-full">{address}</p>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={disconnectWallet}>
-            <LogOut className="h-5 w-5" />
-          </Button>
+          <div className="flex gap-2">
+            <Dialog open={isEditing} onOpenChange={setIsEditing}>
+                <DialogTrigger asChild>
+                    <Button variant="outline" size="icon">
+                        <Edit className="h-5 w-5" />
+                    </Button>
+                </DialogTrigger>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Edit Profile</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div>
+                            <Label htmlFor="username">Username</Label>
+                            <Input id="username" value={tempName} onChange={(e) => setTempName(e.target.value)} />
+                        </div>
+                        <div>
+                            <Label>Avatar</Label>
+                            <div className="grid grid-cols-4 gap-4 mt-2">
+                                {profileAvatars.map(avatar => (
+                                    <button key={avatar.id} onClick={() => setTempAvatar(avatar)} className={cn("rounded-full border-4", tempAvatar.id === avatar.id ? "border-primary" : "border-transparent")}>
+                                        <Avatar className="w-full h-auto">
+                                            <AvatarImage src={avatar.imageUrl} />
+                                            <AvatarFallback>{avatar.id.slice(-2)}</AvatarFallback>
+                                        </Avatar>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsEditing(false)}>Cancel</Button>
+                        <Button onClick={handleSaveProfile}>Save</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+            <Button variant="ghost" size="icon" onClick={disconnectWallet}>
+                <LogOut className="h-5 w-5" />
+            </Button>
+          </div>
         </header>
 
         <Card className="mb-8">
