@@ -20,7 +20,7 @@ export default function DailyPage() {
   const { toast } = useToast();
 
   const handlePuzzleComplete = () => {
-    if (currentPuzzle.id === 'daily-2024-07-29') {
+    if (currentPuzzle.id === 'daily-2024-07-30') {
       setShowRewardModal(true);
     }
     setPuzzleComplete(true);
@@ -45,7 +45,7 @@ export default function DailyPage() {
   
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 pt-8 max-w-2xl">
+      <div className="container mx-auto px-4 pt-8 max-w-4xl">
         <header className="mb-8">
           <h1 className="font-headline text-4xl font-bold">Today's Puzzle</h1>
           <p className="text-muted-foreground">Solve the puzzle to earn rewards and keep your streak alive.</p>
@@ -86,7 +86,7 @@ export default function DailyPage() {
             <CardContent className="space-y-4">
                 <p className="text-muted-foreground mb-6">Great job! You've solved the puzzle.</p>
                 <div className="flex flex-col gap-4">
-                    {currentPuzzle.id === 'daily-2024-07-29' && <Button onClick={() => setShowRewardModal(true)} size="lg">Claim Your Rewards</Button>}
+                    {currentPuzzle.id.startsWith('daily-') && <Button onClick={() => setShowRewardModal(true)} size="lg">Claim Your Rewards</Button>}
                     <Button onClick={handleGenerateNewPuzzle} size="lg" variant="secondary">
                         <Sparkles className="w-4 h-4 mr-2"/>
                         Generate Another Puzzle

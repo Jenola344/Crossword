@@ -34,23 +34,27 @@ export type DailyPuzzle = {
 };
 
 export const dailyPuzzleData: DailyPuzzle = {
-  id: 'daily-2024-07-29',
-  name: 'CRUESSION',
+  id: 'daily-2024-07-30',
+  name: 'Web Dev Weaver',
   reward: {
-    tokens: 100,
+    tokens: 150,
     hint: 1
   },
-  size: 10,
+  size: 12,
   words: [
-    { word: 'CRYPTO', clue: 'Digital currency', start: [0, 0], direction: 'across' },
-    { word: 'WEB', clue: 'The ___ of decentralized apps', start: [0, 2], direction: 'down' },
-    { word: 'NFT', clue: 'A non-fungible token', start: [2, 4], direction: 'across' },
-    { word: 'WALLET', clue: 'Where you store your coins', start: [8, 4], direction: 'across' },
-    { word: 'ETHEREUM', clue: 'Popular blockchain for smart contracts', start: [4, 1], direction: 'down' },
-    { word: 'BLOCKCHAIN', clue: 'A distributed ledger', start: [4, 1], direction: 'across'},
-    { word: 'MINT', clue: 'To create a new NFT', start: [6, 7], direction: 'down'},
+    { word: 'JAVASCRIPT', clue: 'The language of the web', start: [1, 1], direction: 'across' },
+    { word: 'HTML', clue: 'Markup for web pages', start: [0, 4], direction: 'down' },
+    { word: 'CSS', clue: 'Styling language for the web', start: [3, 4], direction: 'across' },
+    { word: 'API', clue: 'Interface for software communication', start: [5, 0], direction: 'across' },
+    { word: 'FRAMEWORK', clue: 'Structure like React or Vue', start: [1, 8], direction: 'down' },
+    { word: 'SERVER', clue: 'Handles requests and serves data', start: [7, 1], direction: 'across' },
+    { word: 'CLIENT', clue: 'The browser-side of an application', start: [6, 3], direction: 'down' },
+    { word: 'COMPONENT', clue: 'Reusable piece of UI', start: [9, 1], direction: 'across' },
+    { word: 'DATABASE', clue: 'Stores application data', start: [3, 6], direction: 'down' },
+    { word: 'JSON', clue: 'Common data interchange format', start: [8, 9], direction: 'down' },
   ]
 };
+
 
 export const generatedPuzzles = [
   {
