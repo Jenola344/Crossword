@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -14,7 +15,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DailyPage() {
   const [currentPuzzle, setCurrentPuzzle] = useState<DailyPuzzle | any>(dailyPuzzleData);
-  const [isPuzzleComplete, setPuzzleComplete] = useState(false);
+  const [isPuzzleComplete, setPuzzleComplete] = useState(true);
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
@@ -31,7 +32,7 @@ export default function DailyPage() {
     try {
         const newPuzzle = await generatePuzzle({ theme: 'Technology' });
         setCurrentPuzzle({ ...newPuzzle, reward: { tokens: 10, hint: 0 }});
-        setPuzzleComplete(false);
+        setPuzzleComplete(true); // Always show solved
     } catch (e) {
         toast({
             variant: "destructive",
@@ -76,15 +77,15 @@ export default function DailyPage() {
                 <Skeleton className="h-12 w-full" />
                 <Skeleton className="h-12 w-full" />
             </div>
-        ) : !isPuzzleComplete ? (
-          <PuzzleView puzzleData={currentPuzzle} onPuzzleComplete={handlePuzzleComplete} />
         ) : (
-          <Card className="text-center p-8 border-primary/50 shadow-lg">
+          <PuzzleView puzzleData={currentPuzzle} onPuzzleComplete={handlePuzzleComplete} />
+        )}
+
+        <Card className="text-center p-8 border-primary/50 shadow-lg mt-8">
             <CardHeader>
-                <CardTitle className="font-headline text-3xl">Puzzle Complete!</CardTitle>
+                <CardTitle className="font-headline text-3xl">Puzzle Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-                <p className="text-muted-foreground mb-6">Great job! You've solved the puzzle.</p>
                 <div className="flex flex-col gap-4">
                     {currentPuzzle.id.startsWith('daily-') && <Button onClick={() => setShowRewardModal(true)} size="lg">Claim Your Rewards</Button>}
                     <Button onClick={handleGenerateNewPuzzle} size="lg" variant="secondary">
@@ -93,8 +94,7 @@ export default function DailyPage() {
                     </Button>
                 </div>
             </CardContent>
-          </Card>
-        )}
+        </Card>
       </div>
       <ClaimRewardModal isOpen={showRewardModal} onOpenChange={setShowRewardModal} />
     </MainLayout>
