@@ -44,9 +44,10 @@ export default function PuzzleView({ puzzleData, onPuzzleComplete }: PuzzleViewP
     }
   }, [completedWords, totalWords, onPuzzleComplete]);
 
-  const { grid, wordPositions } = useMemo(() => {
+  const { grid, wordPositions, solvedGrid } = useMemo(() => {
     const gridSize = puzzleData.size;
     const newGrid: (string | null)[][] = Array(gridSize).fill(null).map(() => Array(gridSize).fill(null));
+    const newSolvedGrid: (string | null)[][] = Array(gridSize).fill(null).map(() => Array(gridSize).fill(null));
     const positions: { [key: string]: number } = {};
     
     puzzleData.words.forEach(wordInfo => {
@@ -58,6 +59,7 @@ export default function PuzzleView({ puzzleData, onPuzzleComplete }: PuzzleViewP
       for (let i = 0; i < wordInfo.word.length; i++) {
         if(row < gridSize && col < gridSize) {
            newGrid[row][col] = ''
+           newSolvedGrid[row][col] = wordInfo.word[i];
         }
         if (wordInfo.direction === 'across') col++;
         else row++;
@@ -86,41 +88,9 @@ export default function PuzzleView({ puzzleData, onPuzzleComplete }: PuzzleViewP
     });
 
 
-    return { grid: newGrid, wordPositions: finalPositions };
+    return { grid: newGrid, wordPositions: finalPositions, solvedGrid: newSolvedGrid };
   }, [puzzleData]);
   
-  const { revealedGrid } = useMemo(() => {
-    const gridSize = puzzleData.size;
-    const newRevealedGrid: (string | null)[][] = Array(gridSize).fill(null).map(() => Array(gridSize).fill(null));
-    
-    puzzleData.words.forEach(wordInfo => {
-      let [row, col] = wordInfo.start;
-      for (let i = 0; i < wordInfo.word.length; i++) {
-        if (row < gridSize && col < gridSize) {
-          newRevealedGrid[row][col] = '';
-        }
-        if (wordInfo.direction === 'across') col++;
-        else row++;
-      }
-    });
-
-    completedWords.forEach(word => {
-        const wordInfo = puzzleData.words.find(w => w.word === word);
-        if (wordInfo) {
-            let [row, col] = wordInfo.start;
-            for (let i = 0; i < wordInfo.word.length; i++) {
-                if (row < gridSize && col < gridSize) {
-                    newRevealedGrid[row][col] = word[i];
-                }
-                if (wordInfo.direction === 'across') col++;
-                else row++;
-            }
-        }
-    });
-
-    return { revealedGrid: newRevealedGrid };
-  }, [puzzleData, completedWords]);
-
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -132,7 +102,7 @@ export default function PuzzleView({ puzzleData, onPuzzleComplete }: PuzzleViewP
         <div className={cn("grid gap-0.5", `grid-cols-${puzzleData.size}`)} style={{gridTemplateColumns: `repeat(${puzzleData.size}, minmax(0, 1fr))`}}>
           {grid.map((row, rowIndex) => (
             row.map((cell, colIndex) => {
-              const isFilled = revealedGrid[rowIndex][colIndex];
+              const letter = solvedGrid[rowIndex][colIndex];
               const startingWord = puzzleData.words.find(w => w.start[0] === rowIndex && w.start[1] === colIndex);
               return (
                 <div
@@ -143,7 +113,7 @@ export default function PuzzleView({ puzzleData, onPuzzleComplete }: PuzzleViewP
                   )}
                 >
                   {startingWord && <span className="absolute top-0 left-0.5 text-[6px] sm:text-[10px] text-muted-foreground">{wordPositions[startingWord.word]}</span>}
-                  {isFilled}
+                  {letter}
                 </div>
               )
             })
