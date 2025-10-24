@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 
 interface PuzzleViewProps {
-  puzzleData: DailyPuzzle;
+  puzzleData: any;
   onPuzzleComplete: () => void;
 }
 
@@ -65,8 +65,8 @@ export default function PuzzleView({ puzzleData, onPuzzleComplete }: PuzzleViewP
 
   return (
     <div className="space-y-6">
-      <div className={`aspect-square bg-card p-2 rounded-xl shadow-lg border border-primary/20`}>
-        <div className={`grid grid-cols-${puzzleData.size} gap-1`}>
+      <div className="aspect-square bg-card p-2 rounded-xl shadow-lg border border-primary/20">
+        <div className={cn("grid gap-1", `grid-cols-${puzzleData.size}`)}>
           {grid.map((row, rowIndex) => (
             row.map((cell, colIndex) => (
               <div

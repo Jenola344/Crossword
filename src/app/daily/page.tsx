@@ -13,7 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DailyPage() {
-  const [currentPuzzle, setCurrentPuzzle] = useState<DailyPuzzle>(dailyPuzzleData);
+  const [currentPuzzle, setCurrentPuzzle] = useState<DailyPuzzle | any>(dailyPuzzleData);
   const [isPuzzleComplete, setPuzzleComplete] = useState(false);
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -30,7 +30,6 @@ export default function DailyPage() {
     setIsGenerating(true);
     try {
         const newPuzzle = await generatePuzzle({ theme: 'Technology' });
-        // @ts-ignore
         setCurrentPuzzle({ ...newPuzzle, reward: { tokens: 10, hint: 0 }});
         setPuzzleComplete(false);
     } catch (e) {

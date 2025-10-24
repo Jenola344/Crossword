@@ -1,11 +1,26 @@
 import { z } from 'zod';
 
-export type PuzzleWord = {
-  word: string;
-  clue: string;
-  start: [number, number]; // [row, col]
-  direction: 'across' | 'down';
-};
+export const PuzzleWordSchema = z.object({
+  word: z.string().describe('The word to be placed in the grid.'),
+  clue: z.string().describe('The clue for the word.'),
+  start: z.tuple([z.number(), z.number()]).describe('The starting [row, col] of the word.'),
+  direction: z.enum(['across', 'down']).describe("The direction of the word, either 'across' or 'down'."),
+});
+
+export type PuzzleWord = z.infer<typeof PuzzleWordSchema>;
+
+export const PuzzleGeneratorInputSchema = z.object({
+  theme: z.string().describe('The theme of the crossword puzzle.'),
+});
+export type PuzzleGeneratorInput = z.infer<typeof PuzzleGeneratorInputSchema>;
+
+export const PuzzleGeneratorOutputSchema = z.object({
+  id: z.string().describe('A unique ID for the puzzle, e.g., theme-YYYY-MM-DD.'),
+  name: z.string().describe('A creative name for the puzzle, related to the theme.'),
+  size: z.number().describe('The size of the grid (e.g., 8 for an 8x8 grid).'),
+  words: z.array(PuzzleWordSchema).describe('An array of words, clues, and their placement in the puzzle.'),
+});
+export type PuzzleGeneratorOutput = z.infer<typeof PuzzleGeneratorOutputSchema>;
 
 export type DailyPuzzle = {
   id: string;
@@ -14,7 +29,7 @@ export type DailyPuzzle = {
     tokens: number;
     hint: number;
   };
-  size: 10 | 8;
+  size: number;
   words: PuzzleWord[];
 };
 
