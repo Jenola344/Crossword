@@ -4,6 +4,38 @@ import React, { createContext, useContext, useState, ReactNode, useEffect, useCa
 import { ethers } from 'ethers';
 import { useToast } from '@/hooks/use-toast';
 import { PlaceHolderImages, type ImagePlaceholder } from '@/lib/placeholder-images';
+import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalAccount, useDisconnect } from '@web3modal/ethers/react';
+
+// 1. Get projectID from https://cloud.walletconnect.com
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '';
+if (!projectId) {
+  console.warn("You need to provide a NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID env variable");
+}
+
+
+// 2. Set chains
+const mainnet = {
+  chainId: 1,
+  name: 'Ethereum',
+  currency: 'ETH',
+  explorerUrl: 'https://etherscan.io',
+  rpcUrl: 'https://cloudflare-eth.com'
+}
+
+// 3. Create modal
+const metadata = {
+  name: 'Crossword Crusade',
+  description: 'Solve. Earn. Own. A Web3 Crossword Puzzle Game.',
+  url: 'https://crosswordcrusade.com', // origin must match your domain & subdomain
+  icons: ['https://crosswordcrusade.com/logo.png']
+}
+
+createWeb3Modal({
+  ethersConfig: defaultConfig({ metadata }),
+  chains: [mainnet],
+  projectId,
+  enableAnalytics: true // Optional - defaults to your Cloud configuration
+})
 
 export type Nft = {
   id: number;
@@ -43,69 +75,42 @@ const MOCK_NFTS: Nft[] = [
 ];
 
 export const Web3Provider = ({ children }: { children: ReactNode }) => {
-  const [address, setAddress] = useState<string | null>(null);
   const [balance, setBalance] = useState(0);
   const [nfts, setNfts] = useState<Nft[]>([]);
   const [puzzlesSolved, setPuzzlesSolved] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
   const { toast } = useToast();
 
-  const getProvider = () => {
-    if (typeof window !== 'undefined' && window.ethereum) {
-      return new ethers.BrowserProvider(window.ethereum);
-    }
-    return null;
-  };
+  const { open } = useWeb3Modal();
+  const { address, isConnected } = useWeb3ModalAccount();
+  const { disconnect } = useDisconnect();
 
-  const connectWallet = async () => {
-    const provider = getProvider();
-    if (provider) {
-      try {
-        const accounts = await provider.send("eth_requestAccounts", []);
-        if (accounts.length > 0) {
-          const signer = await provider.getSigner();
-          const signerAddress = await signer.getAddress();
-          setAddress(signerAddress);
-          // For now, we'll keep the mock balance and NFTs.
-          // We can replace this with real contract calls later.
-          setBalance(1000); 
-          setNfts(MOCK_NFTS);
-          setPuzzlesSolved(42);
-          setLongestStreak(12);
-          toast({
-            title: 'Wallet Connected',
-            description: `Connected with address: ${signerAddress.slice(0, 10)}...${signerAddress.slice(-4)}`,
-          });
-        }
-      } catch (error) {
-        console.error("Error connecting to wallet:", error);
+  const connectWallet = () => open();
+  const disconnectWallet = () => disconnect();
+
+  useEffect(() => {
+    if (isConnected && address) {
+        setBalance(1000); 
+        setNfts(MOCK_NFTS);
+        setPuzzlesSolved(42);
+        setLongestStreak(12);
         toast({
-          variant: "destructive",
-          title: 'Connection Failed',
-          description: 'Could not connect to the wallet.',
+          title: 'Wallet Connected',
+          description: `Connected with address: ${address.slice(0, 10)}...${address.slice(-4)}`,
         });
-      }
     } else {
-      toast({
-        variant: "destructive",
-        title: 'MetaMask Not Found',
-        description: 'Please install a Web3 wallet like MetaMask.',
-      });
+        setBalance(0);
+        setNfts([]);
+        setPuzzlesSolved(0);
+        setLongestStreak(0);
     }
-  };
-
-  const disconnectWallet = () => {
-    setAddress(null);
-    setBalance(0);
-    setNfts([]);
-    setPuzzlesSolved(0);
-    setLongestStreak(0);
-    toast({
-      title: 'Wallet Disconnected',
-    });
-  };
+  }, [isConnected, address, toast]);
   
   const claimTokens = (amount: number) => {
+    if (!isConnected) {
+        toast({ variant: 'destructive', title: "Not Connected", description: "Please connect your wallet to claim tokens."});
+        return;
+    }
     // This will be replaced with a real contract call.
     setBalance(prev => prev + amount);
     toast({
@@ -133,6 +138,10 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
   };
   
   const spendTokens = (amount: number, itemName: string) => {
+    if (!isConnected) {
+        toast({ variant: 'destructive', title: "Not Connected", description: "Please connect your wallet to make a purchase."});
+        return false;
+    }
     // This will be replaced with a real contract call.
     if (balance >= amount) {
       setBalance(prev => prev - amount);
@@ -151,30 +160,8 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  const handleAccountsChanged = useCallback((accounts: string[]) => {
-    if (accounts.length === 0) {
-      disconnectWallet();
-    } else {
-      setAddress(accounts[0]);
-    }
-  }, []);
-
-  useEffect(() => {
-    const ethereum = window.ethereum;
-    if (ethereum) {
-        // @ts-ignore
-        ethereum.on('accountsChanged', handleAccountsChanged);
-
-        return () => {
-            // @ts-ignore
-            ethereum.removeListener('accountsChanged', handleAccountsChanged);
-        };
-    }
-  }, [handleAccountsChanged]);
-
-
   return (
-    <Web3Context.Provider value={{ address, connectWallet, disconnectWallet, balance, nfts, claimTokens, revealNft, spendTokens, puzzlesSolved, longestStreak }}>
+    <Web3Context.Provider value={{ address: address || null, connectWallet, disconnectWallet, balance, nfts, claimTokens, revealNft, spendTokens, puzzlesSolved, longestStreak }}>
       {children}
     </Web3Context.Provider>
   );
